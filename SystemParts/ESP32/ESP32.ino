@@ -17,8 +17,7 @@
 #define API_KEY "AIzaSyCFcMdUr5eVTGJnEZfWD1YjRYXrV0Tyg_Y"
 
 /* 3. กำหนด URL ของ real-time database */
-#define DATABASE_URL "https://esp32-aircontroller-default-rtdb.asia-southeast1.firebasedatabase.app/"  //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
-
+#define DATABASE_URL "https://esp32-aircontroller-default-rtdb.asia-southeast1.firebasedatabase.app/" 
 /* 4. กำหนดอีเมลและรหัสผ่านผู้ใช้ที่ลงทะเบียนหรือเพิ่มใน project แล้ว */
 #define USER_EMAIL "aleefrock12345@gmail.com"   // อีเมลที่เพิ่มใน Authentication บนแพลตฟอร์ม firebase
 #define USER_PASSWORD "!12345"                  // รหัสของอีเมลที่เพิ่มไว้ข้างต้น
@@ -199,7 +198,6 @@ void loop() {
       UpdateData();   // Update ข้อมูลลงใน firebase real-time database
     }
   }
-
   // เมื่อสถานะเครื่องปรับอากาศเปิดอยู่แล้วหมดคาบเรียนให้เปลียนสถานะเป็นปิด
   if (statusAir && schedule == HIGH) {
     statusAir = false;
