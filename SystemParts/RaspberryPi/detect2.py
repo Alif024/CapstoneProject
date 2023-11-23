@@ -38,6 +38,7 @@ def task1():
 def task2():
     global statusAir
     global schedule
+    peopleStatusPrevious = 0
     while True:
         #int schedule = digitalRead(schedulePin);
         # ตรวจคน 
