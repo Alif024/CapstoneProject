@@ -2,29 +2,29 @@
 #include <WiFi.h>
 #include <Firebase_ESP_Client.h>
 
-// Provide the token generation process info.
+// ระบุข้อมูลกระบวนการสร้างโทเค็น
 #include <addons/TokenHelper.h>
 
-// Provide the RTDB payload printing info and other helper functions.
+// ระบุข้อมูลการพิมพ์ real-time database payload และฟังก์ชันตัวช่วยอื่นๆ
 #include <addons/RTDBHelper.h>
 
-/* 1. Define the WiFi credentials */
-#define WIFI_SSID "COC123"
-#define WIFI_PASSWORD "ooooo123"
+/* 1. กำหนดข้อมูลของการรับรองความถูกต้องและการเข้ารหัสที่ router ใช้ */
+#define WIFI_SSID "COC123"          // ชื่อ WIFI
+#define WIFI_PASSWORD "ooooo123"    // รหัส WIFI
 
-// For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
+// สำหรับข้อมูลประจำตัวต่อไปนี้ สามารถดูตัวอย่างได้ที่ examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 
-/* 2. Define the API Key */
+/* 2. กำหนดคีย์ API */
 #define API_KEY "AIzaSyCFcMdUr5eVTGJnEZfWD1YjRYXrV0Tyg_Y"
 
-/* 3. Define the RTDB URL */
+/* 3. กำหนด URL ของ real-time database */
 #define DATABASE_URL "https://esp32-aircontroller-default-rtdb.asia-southeast1.firebasedatabase.app/" 
 
-/* 4. Define the user Email and password that alreadey registerd or added in your project */
-#define USER_EMAIL "aleefrock12345@gmail.com"
-#define USER_PASSWORD "!12345"
+/* 4. กำหนดอีเมลและรหัสผ่านผู้ใช้ที่ลงทะเบียนหรือเพิ่มใน project แล้ว */
+#define USER_EMAIL "aleefrock12345@gmail.com"   // อีเมลที่เพิ่มใน Authentication บนแพลตฟอร์ม firebase
+#define USER_PASSWORD "!12345"                  // รหัสของอีเมลที่เพิ่มไว้ข้างต้น
 
-// Define Firebase Data object
+// กำหนด object ข้อมูล Firebase
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
@@ -33,42 +33,32 @@ unsigned long sendDataPrevMillis = 0;
 bool statusAirFirebase;
 bool statusAir = false;
 
-#include "PinDefinitionsAndMore.h"  // Define macros for input and output pin etc.
+#include "PinDefinitionsAndMore.h"  // กำหนดมาโครสำหรับขาขาเข้าและขาขาออก ฯลฯ.
 #if !defined(IR_SEND_PIN)
-#define IR_SEND_PIN 4
+#define IR_SEND_PIN 4               // กำหนดให้ขา 4 สำหรับส่งสัญญาณอินฟราเรด
 #endif
 
 /*
- * Specify DistanceWidthProtocol for decoding. This must be done before the #include <IRremote.hpp>
+ * ระบุ DistanceWidthProtocol สำหรับการถอดรหัส สิ่งนี้ต้องทำก่อน #include <IRremote.hpp>
  */
-#define DECODE_DISTANCE_WIDTH  // Universal decoder for pulse distance width protocols
-//
+#define DECODE_DISTANCE_WIDTH  // ตัวถอดรหัสสากลสำหรับโปรโตคอลความกว้างระยะของพัลส์
 #if !defined(RAW_BUFFER_LENGTH)
 #if RAMEND <= 0x4FF || RAMSIZE < 0x4FF
 #define RAW_BUFFER_LENGTH 120
-#elif RAMEND <= 0xAFF || RAMSIZE < 0xAFF  // 0xAFF for LEONARDO
-#define RAW_BUFFER_LENGTH 400             // 600 is too much here, because we have additional uint8_t rawCode[RAW_BUFFER_LENGTH];
+#elif RAMEND <= 0xAFF || RAMSIZE < 0xAFF  // 0xAFF สำหรับ LEONARDO
+#define RAW_BUFFER_LENGTH 400             // 600 มากเกินไปที่นี่ เนื่องจากมี uint8_t rawCode[RAW_BUFFER_LENGTH]; เพิ่มเติม
 #else
 #define RAW_BUFFER_LENGTH 750
 #endif
 #endif
 
-//#define NO_LED_FEEDBACK_CODE      // saves 92 bytes program memory
-//#define RECORD_GAP_MICROS 12000   // Default is 5000. Activate it for some LG air conditioner protocols
-//#define SEND_PWM_BY_TIMER         // Disable carrier PWM generation in software and use (restricted) hardware PWM.
-//#define USE_NO_SEND_PWM           // Use no carrier PWM, just simulate an active low receiver signal. Overrides SEND_PWM_BY_TIMER definition
-
-//#define DEBUG // Activate this for lots of lovely debug output from the decoders.
-
 #include <IRremote.hpp>
-
-#define SEND_BUTTON_PIN 13
 
 #define DELAY_BETWEEN_REPEATS_MILLIS 70
 
-// Storage for the recorded code, pre-filled with NEC data
-IRRawDataType sDecodedRawOpen[RAW_DATA_ARRAY_SIZE] = { 0x6000000521C };                        // address 0x12 command 0x34
-IRRawDataType sDecodedRawClose[RAW_DATA_ARRAY_SIZE] = { 0x7000000520C };                       // address 0x12 command 0x34
+// พื้นที่จัดเก็บสำหรับรหัสที่บันทึกไว้ ซึ่งได้ถูกเติมล่วงหน้าด้วยข้อมูล NEC
+IRRawDataType sDecodedRawOpen[RAW_DATA_ARRAY_SIZE] = { 0x6000000521C };                        // command 0x6000000521C ซึ่งเป็นคำสั่งเปิดแอร์
+IRRawDataType sDecodedRawClose[RAW_DATA_ARRAY_SIZE] = { 0x7000000520C };                       // command 0x7000000520C ซึ่งเป็นคำสั่งปิดแอร์
 DistanceWidthTimingInfoStruct sDistanceWidthTimingInfo = { 9050, 4550, 600, 1650, 600, 500 };  // NEC timing
 uint8_t sNumberOfBits = 44;
 
@@ -80,61 +70,53 @@ void setup() {
   delay(4000); 
 #endif
   IrSender.begin();  // Start with IR_SEND_PIN as send pin and enable feedback LED at default feedback LED pin
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("Connecting to Wi-Fi");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);   // เป็นฟังก์ชั่นเพื่อเตรียมการ WiFi Library และตั้งค่าเครือข่าย
+  Serial.print("Connecting to Wi-Fi");    
   unsigned long ms = millis();
+
+  // เชื่อมต่อกับ Wifi ให้สำเร็จก่อนถึงจะดำเนินขั้นตอนถัดไป 
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(300);
   }
   Serial.println();
   Serial.print("Connected with IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());        // แสดง IP address ของ esp32
   Serial.println();
-  Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
+  Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);    // แสดง version ของ Firebase Client
 
-  /* Assign the api key (required) */
+  /* กำหนดคีย์ API (จำเป็น) */
   config.api_key = API_KEY;
 
-  /* Assign the user sign in credentials */
+  /* กำหนดข้อมูลรับรองการลงชื่อเข้าใช้ของผู้ใช้ */
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
 
-  /* Assign the RTDB URL (required) */
+  /* กำหนด URL ของ real-time database (จำเป็น) */
   config.database_url = DATABASE_URL;
 
-  /* Assign the callback function for the long running token generation task */
-  config.token_status_callback = tokenStatusCallback;  // see addons/TokenHelper.h
+  /* กำหนดฟังก์ชัน callback สำหรับงานสร้างโทเค็นที่รันระยะยาว */
+  config.token_status_callback = tokenStatusCallback;  // สามารถดูตัวอย่างได้ที่ addons/TokenHelper.h
 
-  // Or use legacy authenticate method
-  // config.database_url = DATABASE_URL;
-  // config.signer.tokens.legacy_token = "<database secret>";
-
-  // To connect without auth in Test Mode, see Authentications/TestMode/TestMode.ino
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  // Please make sure the device free Heap is not lower than 80 k for ESP32 and 10 k for ESP8266,
-  // otherwise the SSL connection will fail.
-  //////////////////////////////////////////////////////////////////////////////////////////////
-
-  // Comment or pass false value when WiFi reconnection will control by your code or third party library e.g. WiFiManager
+  // Comment หรือส่งค่าเท็จเมื่อการเชื่อมต่อ WiFi ใหม่จะควบคุมโดย code หรือ third party library เช่น WiFiManager
   Firebase.reconnectNetwork(true);
 
-  // Since v4.4.x, BearSSL engine was used, the SSL buffer need to be set.
-  // Large data transmission may require larger RX buffer, otherwise connection issue or data read time out can be occurred.
-  fbdo.setBSSLBufferSize(4096 /* Rx buffer size in bytes from 512 - 16384 */, 1024 /* Tx buffer size in bytes from 512 - 16384 */);
+  // ตั้งแต่เวอร์ชัน 4.4.x มีการใช้กลไก BearSSL จึงจำเป็นต้องตั้งค่าบัฟเฟอร์ SSL
+  // การส่งข้อมูลขนาดใหญ่อาจต้องใช้บัฟเฟอร์ RX ที่ใหญ่กว่า ไม่เช่นนั้นปัญหาการเชื่อมต่อหรือการอ่านข้อมูลอาจ time out ได้
+  fbdo.setBSSLBufferSize(4096 /* ขนาดบัฟเฟอร์ Rx เป็นไบต์ตั้งแต่ 512 - 16384 */, 1024 /* ขนาดบัฟเฟอร์ Tx เป็นไบต์ตั้งแต่ 512 - 16384 */);
 
-  // Limit the size of response payload to be collected in FirebaseData
+  // จำกัดขนาดของ response payload ที่จะรวบรวมใน FirebaseData
   fbdo.setResponseSize(2048);
 
   Firebase.begin(&config, &auth);
 
   Firebase.setDoubleDigits(5);
 
-  config.timeout.serverResponse = 10 * 1000;
+  config.timeout.serverResponse = 10 * 1000;        // หมดเวลา response read ของเซิร์ฟเวอร์ในหน่วยมิลลิวินาที (1 วินาที - 1 นาที)
 }
 
 void loop() {
+  // ตรวจสอบว่า Wifi ขาดการเชื่อมต่อหรือไม่
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("WiFi disconnected. Reconnecting...");
     WiFi.reconnect();
@@ -145,6 +127,7 @@ void loop() {
     Serial.println("Connected to WiFi");
     Firebase.reconnectWiFi(true);
   } else {
+    // รับค่ามาจาก firebase real-time database
     if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0)) {
       sendDataPrevMillis = millis();
       if (Firebase.RTDB.getBool(&fbdo, F("/DeviceStatus/AirConditioner"), &statusAirFirebase)) {
@@ -156,11 +139,12 @@ void loop() {
     }
 
     if (!statusAir && statusAirFirebase != statusAir) {
+      // เมื่อแอร์ปิดอยู่แล้วข้อมูลที่รับมาเป็น True ให้ทำการส่งสัญญาณเปิดแอร์
       statusAir = statusAirFirebase;
       repeatSendIR = millis();
       while (millis() - repeatSendIR < 1000) {
         Serial.println();
-        Serial.flush();  // To avoid disturbing the software PWM generation by serial output interrupts
+        Serial.flush();  // เพื่อหลีกเลี่ยงการรบกวนการสร้าง PWM โดยซอฟต์แวร์จากการขัดจังหวะของสัญญาณออกแบบอนุกรม
 
         IrSender.sendPulseDistanceWidthFromArray(38, &sDistanceWidthTimingInfo, &sDecodedRawOpen[0], sNumberOfBits,
 #if defined(USE_MSB_DECODING_FOR_DISTANCE_DECODER)
@@ -171,14 +155,15 @@ void loop() {
                                                  ,
                                                  100, 0);
 
-        delay(DELAY_BETWEEN_REPEATS_MILLIS);  // Wait a bit between retransmissions
+        delay(DELAY_BETWEEN_REPEATS_MILLIS);  // รอสักครู่ระหว่างการส่งข้อมูลซ้ำ
       }
     } else if (statusAir && statusAirFirebase != statusAir) {
+      // เมื่อแอร์เปิดอยู่แล้วข้อมูลที่รับมาเป็น False ให้ทำการส่งสัญญาณปิดแอร์
       statusAir = statusAirFirebase;
       repeatSendIR = millis();
       while (millis() - repeatSendIR < 1000) {
         Serial.println();
-        Serial.flush();  // To avoid disturbing the software PWM generation by serial output interrupts
+        Serial.flush();  // เพื่อหลีกเลี่ยงการรบกวนการสร้าง PWM โดยซอฟต์แวร์จากการขัดจังหวะของสัญญาณออกแบบอนุกรม
 
         IrSender.sendPulseDistanceWidthFromArray(38, &sDistanceWidthTimingInfo, &sDecodedRawClose[0], sNumberOfBits,
 #if defined(USE_MSB_DECODING_FOR_DISTANCE_DECODER)
@@ -189,7 +174,7 @@ void loop() {
                                                  ,
                                                  100, 0);
 
-        delay(DELAY_BETWEEN_REPEATS_MILLIS);  // Wait a bit between retransmissions
+        delay(DELAY_BETWEEN_REPEATS_MILLIS);  // รอสักครู่ระหว่างการส่งข้อมูลซ้ำ
       }
     }
   }
