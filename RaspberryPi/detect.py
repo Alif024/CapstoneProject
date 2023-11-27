@@ -90,7 +90,7 @@ def task2():
 
 def task3():
     global schedule
-    cred = credentials.Certificate('credentials.json')      # ดึงข้อมูลเนื้อหาไฟล์ JSON ของคีย์บัญชีบริการ
+    cred = credentials.Certificate('RaspberryPi\credentials.json')      # ดึงข้อมูลเนื้อหาไฟล์ JSON ของคีย์บัญชีบริการ
 
     # ตรวจสอบว่ามีการเชื่อมต่อกับอิเทอร์เน็ตไหม
     while not(check_wifi_connection()):
