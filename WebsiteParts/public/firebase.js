@@ -124,36 +124,10 @@ function highlightCurrentTimeSlot() {
             cell.style.backgroundColor = 'lightgreen';
             cell.textContent = 'Now';
 
-            // Update ข้อมูลลง database ดังนี้
-            const toggleButton = document.getElementById('toggleButton');
-            if (toggleButton.textContent != 'Save') {
-                var db = getDatabase(app);
-                update(ref(db, 'Schedule'), {
-                    Status: true
-                });
-            }
-
         } else {
             cell.style.backgroundColor = 'lightcoral';
             cell.textContent = 'Now';
 
-            // Update ข้อมูลลง database ดังนี้
-            const toggleButton = document.getElementById('toggleButton');
-            if (toggleButton.textContent != 'Save') {
-                var db = getDatabase(app);
-                update(ref(db, 'Schedule'), {
-                    Status: false
-                });
-            }
-        }
-    } else {
-        // Update ข้อมูลลง database ดังนี้
-        const toggleButton = document.getElementById('toggleButton');
-        if (toggleButton.textContent != 'Save') {
-            var db = getDatabase(app);
-            update(ref(db, 'Schedule'), {
-                Status: false
-            });
         }
     }
 }
@@ -182,6 +156,15 @@ function saveSelectedCells() {
         .catch((error) => {
             console.error("Failed to save data: ", error);
         });
+
+    // Update ข้อมูลลง database ดังนี้
+    const toggleButton = document.getElementById('toggleButton');
+    if (toggleButton.textContent != 'Save') {
+        var db = getDatabase(app);
+        update(ref(db, 'EditTable'), {
+            Status: true
+        });
+    }
 }
 
 function toggleEditMode() {
