@@ -2,443 +2,188 @@
 <html lang="th">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Device Status</title>
-  <script src="moment.js"></script>
-  <script>
-    function checkSchedule(doc) {
-      if (doc.style.backgroundColor == `rgb(151, 227, 194)` || doc.style.backgroundColor == `rgb(167, 199, 231)`) {
-        doc.style.backgroundColor = "#97E3C2";
-        doc.innerHTML = `<b><u>NOW</u></b>`;
-      } else {
-        doc.style.backgroundColor = "#F69C9E";
-        doc.innerHTML = `<b><u>NOW</u></b>`;
-      }
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Status</title>
+    <script src="moment.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function updateDayNames() {
+            var screenWidth = window.innerWidth;
+            var dayMap = {
+                "day-monday": screenWidth < 768 ? "Mon" : "Monday",
+                "day-tuesday": screenWidth < 768 ? "Tue" : "Tuesday",
+                "day-wednesday": screenWidth < 768 ? "Wed" : "Wednesday",
+                "day-thursday": screenWidth < 768 ? "Thu" : "Thursday",
+                "day-friday": screenWidth < 768 ? "Fri" : "Friday"
+                // เพิ่มสำหรับวันที่เหลือ
+            };
 
-    function toDefault(nameDay, classNum) {
-      let docBefore = document.getElementById(`${nameDay}_class${classNum}`);
-      if (docBefore.style.backgroundColor == `rgb(151, 227, 194)`) {
-        docBefore.style.backgroundColor = "#A7C7E7";
-        docBefore.textContent = "✓";
-      } else if (docBefore.style.backgroundColor == `rgb(246, 156, 158)`) {
-        docBefore.style.backgroundColor = "white";
-        docBefore.textContent = "";
-      }
-    }
+            for (var id in dayMap) {
+                document.getElementById(id).textContent = dayMap[id];
+            }
+        }
 
-    function nowTime(nameDay, hr, min) {
-      let doc;
-      /* 8.15 - 9.15 */
-      if (hr >= 8 && hr < 9 && min >= 15) {
-        doc = document.getElementById(`${nameDay}_class1`);
-        checkSchedule(doc);
-      } else if (hr == 9 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class1`);
-        checkSchedule(doc);
-      }
+        function Time() {
+            document.getElementById("date").innerHTML = moment().format('ddd; DD MMM. YYYY');
+            document.getElementById("time").innerHTML = moment().format('kk : mm : ss');
+            setTimeout(Time, 1000);
+        }
 
-      /* 9.15 - 10.15 */
-      else if (hr >= 9 && hr < 10 && min >= 15) {
-        doc = document.getElementById(`${nameDay}_class2`);
-        toDefault(nameDay, 1);
-        checkSchedule(doc);
-      } else if (hr == 10 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class2`);
-        checkSchedule(doc);
-      }
+        function init() {
+            updateDayNames();
+            Time();
+        }
 
-      /* 10.15 - 11.15 */
-      else if (hr >= 10 && hr < 11 && min >= 15) {
-        doc = document.getElementById(`${nameDay}_class3`);
-        toDefault(nameDay, 2);
-        checkSchedule(doc);
-      } else if (hr == 11 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class3`);
-        checkSchedule(doc);
-      }
-
-      /* 11.15 - 12.15 */
-      else if (hr >= 11 && hr < 12 && min >= 15) {
-        doc = document.getElementById(`${nameDay}_class4`);
-        toDefault(nameDay, 3);
-        checkSchedule(doc);
-      } else if (hr == 12 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class4`);
-        checkSchedule(doc);
-      }
-
-      /* 12.15 - 13.15 */
-      else if (hr >= 12 && hr < 13 && min >= 15) {
-        toDefault(nameDay, 4);
-        document.getElementById(`ID_lunchBreak`).style.backgroundColor = "#F69C9E";
-        document.getElementById(`ID_lunchBreak`).innerHTML = `<b><u>NOW</u></b>`;
-      } else if (hr == 13 && min < 15) {
-        document.getElementById(`ID_lunchBreak`).style.backgroundColor = "#F69C9E";
-        document.getElementById(`ID_lunchBreak`).innerHTML = `<b><u>NOW</u></b>`;
-      }
-
-      /* 13.15 - 14.15 */
-      else if (hr >= 13 && hr < 14 && min >= 15) {
-        doc = document.getElementById(`${nameDay}_class5`);
-        docBefore = document.getElementById(`ID_lunchBreak`);
-        docBefore.style.backgroundColor = "white";
-        docBefore.textContent = "";
-        checkSchedule(doc);
-      } else if (hr == 14 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class5`);
-        checkSchedule(doc);
-      }
-
-      /* 14.15 - 15.15 */
-      else if (hr >= 14 && hr < 15 && min >= 15) {
-        toDefault(nameDay, 5);
-        doc = document.getElementById(`${nameDay}_class6`);
-        checkSchedule(doc);
-      } else if (hr == 15 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class6`);
-        checkSchedule(doc);
-      }
-
-      /* 15.15 - 16.15 */
-      else if (hr >= 15 && hr < 16 && min >= 15) {
-        toDefault(nameDay, 6);
-        doc = document.getElementById(`${nameDay}_class7`)
-        checkSchedule(doc);
-      } else if (hr == 16 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class7`)
-        checkSchedule(doc);
-      }
-
-      /* 16.15 - 17.15 */
-      else if (hr >= 16 && hr < 17 && min >= 15) {
-        toDefault(nameDay, 7);
-        doc = document.getElementById(`${nameDay}_class8`)
-        checkSchedule(doc);
-      } else if (hr == 17 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class8`)
-        checkSchedule(doc);
-      }
-
-      /* 17.15 - 18.15 */
-      else if (hr >= 17 && hr < 18 && min >= 15) {
-        toDefault(nameDay, 8);
-        doc = document.getElementById(`${nameDay}_class9`)
-        checkSchedule(doc);
-      } else if (hr == 18 && min < 15) {
-        doc = document.getElementById(`${nameDay}_class9`)
-        checkSchedule(doc);
-      } else {
-        toDefault(nameDay, 9);
-      }
-    }
-
-    function startTime() {
-      const today = new Date();
-      const day = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-      let nameDay = day[today.getDay()];
-      //let nameDay = day[5];
-      let h = today.getHours();
-      //let h = 17;
-      let m = today.getMinutes();
-      //let m = 15;
-      let s = today.getSeconds();
-      m = checkTime(m);
-      s = checkTime(s);
-      document.getElementById("date").innerHTML = moment().format('ddd; DD MMM. YYYY');
-      document.getElementById("time").innerHTML = moment().format('kk : mm : ss');
-
-      if (nameDay == "Monday") {
-        nowTime(nameDay, h, m);
-      } else if (nameDay == "Tuesday") {
-        nowTime(nameDay, h, m);
-      } else if (nameDay == "Wednesday") {
-        nowTime(nameDay, h, m);
-      } else if (nameDay == "Thursday") {
-        nowTime(nameDay, h, m);
-      } else if (nameDay == "Friday") {
-        nowTime(nameDay, h, m);
-      }
-
-      setTimeout(startTime, 1000);
-    }
-
-    function checkTime(i) {
-      if (i < 10) {
-        i = "0" + i;
-      } // add zero in front of numbers < 10
-      return i;
-    }
-
-  </script>
-  <style>
-    .table-Schedule {
-      background-color: white;
-      border-collapse: collapse;
-      width: 75%;
-      text-align: right;
-      font-family: arial, sans-serif;
-      font-size: 12px;
-      margin-left: auto;
-      margin-right: auto;
-      border: 1px solid;
-      padding: 10px;
-      box-shadow: 5px 10px 18px #78A2CC;
-    }
-
-    .table-Schedule th,
-    td {
-      border: 1px solid black;
-      padding-left: 1px;
-      padding-right: 1px;
-      padding-bottom: 10px;
-      padding-top: 10px;
-      text-align: center;
-    }
-
-    .table-Schedule th {
-      background-color: #78A2CC;
-    }
-
-    .table-Device {
-      background-color: white;
-      border-collapse: collapse;
-      width: 75%;
-      text-align: right;
-      font-family: arial, sans-serif;
-      font-size: 13px;
-      margin-left: auto;
-      margin-right: auto;
-      border: 1px solid;
-      box-shadow: 5px 10px 18px #78A2CC;
-    }
-
-    .table-Device td {
-      border: 1px solid black;
-      padding-left: 1px;
-      padding-right: 1px;
-      padding-bottom: 10px;
-      padding-top: 10px;
-      text-align: center;
-    }
-
-    .table-Device th {
-      background-color: #78A2CC;
-      border: 1px solid black;
-      padding-left: 17px;
-      padding-right: 17px;
-      padding-bottom: 10px;
-      padding-top: 10px;
-      text-align: center;
-    }
-  </style>
+    </script>
 </head>
 
-<body onload='startTime()' style="background-color: #AAD2EC;">
-  <br>
-  <div style="text-align: center; color: #024FA7; font-family: arial, sans-serif; text-shadow: 4px 4px 5px #78A2CC">
-    <b>
-      <a id='date' style="font-size: 32px;"></a><br>
-      <a id='time' style="font-size: 52px;"></a>
-    </b>
-  </div><br>
-  <table class="table-Schedule">
-    <thead style="color: white;">
-      <tr>
-        <th colspan="12" style="font-size: medium;"><u>Class Schedule</u></th>
-      </tr>
-      <tr>
-        <th>Days</th>
-        <th>08.15 - 09.15</th>
-        <th>09.15 - 10.15</th>
-        <th>10.15 - 11.15</th>
-        <th>11.15 - 12.15</th>
-        <th>12.15 - 13.15</th>
-        <th>13.15 - 14.15</th>
-        <th>14.15 - 15.15</th>
-        <th>15.15 - 16.15</th>
-        <th>16.15 - 17.15</th>
-        <th>17.15 - 18.15</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr id="ID_Monday">
-        <td style="background-color: #78A2CC; color: white;">Monday</td>
-        <td id="Monday_class1" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class2" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class3" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class4"></td>
-        <td rowspan="5" id="ID_lunchBreak"></td>
-        <td id="Monday_class5" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class6" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class7" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class8" style="background-color: #A7C7E7;">✓</td>
-        <td id="Monday_class9"></td>
-      </tr>
-      <tr id="ID_Tuesday">
-        <td style="background-color: #78A2CC; color: white;">Tuesday</td>
-        <td id="Tuesday_class1" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class2" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class3" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class4" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class5" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class6" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class7" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class8" style="background-color: #A7C7E7;">✓</td>
-        <td id="Tuesday_class9" style="background-color: #A7C7E7;">✓</td>
-      </tr>
-      <tr id="ID_Wednesday">
-        <td style="background-color: #78A2CC; color: white;">Wednesday</td>
-        <td id="Wednesday_class1"></td>
-        <td id="Wednesday_class2" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class3" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class4" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class5"></td>
-        <td id="Wednesday_class6" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class7" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class8" style="background-color: #A7C7E7;">✓</td>
-        <td id="Wednesday_class9" style="background-color: #A7C7E7;">✓</td>
-      </tr>
-      <tr id="ID_Thursday">
-        <td style="background-color: #78A2CC; color: white;">Thursday</td>
-        <td id="Thursday_class1"></td>
-        <td id="Thursday_class2" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class3" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class4" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class5" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class6" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class7" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class8" style="background-color: #A7C7E7;">✓</td>
-        <td id="Thursday_class9"></td>
-      </tr>
-      <tr id="ID_Friday">
-        <td style="background-color: #78A2CC; color: white;">Friday</td>
-        <td id="Friday_class1" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class2" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class3" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class4"></td>
-        <td id="Friday_class5" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class6" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class7" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class8" style="background-color: #A7C7E7;">✓</td>
-        <td id="Friday_class9"></td>
-      </tr>
-      <tr>
-        <td colspan="4">
-          <svg width="10" height="10">
-            <rect width="10" height="10" style="fill:#97E3C2;" />
-          </svg>
-          <a> : เวลาในตอนนี้ (เมื่อมีคาบเรียน)</a>
-        </td>
-        <td colspan="4">
-          <svg width="10" height="10">
-            <rect width="10" height="10" style="fill:#F69C9E;" />
-          </svg>
-          <a> : เวลาในตอนนี้ (เมื่อไม่มีคาบเรียน)</a>
-        </td>
-        <td colspan="4">
-          <svg width="10" height="10">
-            <rect width="10" height="10" style="fill:#A7C7E7;" />
-          </svg>
-          <a>, ✓ : คาบที่ใช้ห้องเรียน</a>
-        </td>
-      </tr>
-    </tbody>
-  </table><br><br>
+<body style="background-color: #AAD2EC;">
+    <br>
+    <div style="text-align: center; color: #024FA7; font-family: arial, sans-serif; text-shadow: 4px 4px 5px #78A2CC">
+        <b>
+            <a id='date' style="font-size: 32px;"></a><br>
+            <a id='time' style="font-size: 52px;"></a>
+        </b>
+    </div>
+    <br>
+    <table>
+        <tr style="background-color: #78A2CC;">
+            <th style="border: none;" colspan="2">
+            </th>
+            <th style="border: none; color: white; font-size: large;" colspan="8">
+                <u>Class Schedule</u>
+            </th>
+            <th style="border: none; padding-right: 20px;" colspan="2">
+                <button style="float: right;" id="toggleButton">Edit</button>
+            </th>
+        </tr>
+        <tr style="background-color: #78A2CC; color: white;">
+            <th>Day / Time</th>
+            <th>8.15 - 9.15</th>
+            <th>9.15 - 10.15</th>
+            <th>10.15 - 11.15</th>
+            <th>11.15 - 12.15</th>
+            <th>12.15 - 13.15</th>
+            <th>13.15 - 14.15</th>
+            <th>14.15 - 15.15</th>
+            <th>15.15 - 16.15</th>
+            <th>16.15 - 17.15</th>
+            <th>17.15 - 18.15</th>
+            <th>18.15 - 19.15</th>
+        </tr>
+        <tr>
+            <td class="day-column" id="day-monday">Monday</td>
+            <td id="monday-815"></td>
+            <td id="monday-915"></td>
+            <td id="monday-1015"></td>
+            <td id="monday-1115"></td>
+            <td id="break" rowspan="5"></td>
+            <td id="monday-1315"></td>
+            <td id="monday-1415"></td>
+            <td id="monday-1515"></td>
+            <td id="monday-1615"></td>
+            <td id="monday-1715"></td>
+            <td id="monday-1815"></td>
+        </tr>
+        <tr>
+            <td class="day-column" id="day-tuesday">Tuesday</td>
+            <td id="tuesday-815"></td>
+            <td id="tuesday-915"></td>
+            <td id="tuesday-1015"></td>
+            <td id="tuesday-1115"></td>
+            <td id="tuesday-1315"></td>
+            <td id="tuesday-1415"></td>
+            <td id="tuesday-1515"></td>
+            <td id="tuesday-1615"></td>
+            <td id="tuesday-1715"></td>
+            <td id="tuesday-1815"></td>
+        </tr>
+        <tr>
+            <td class="day-column" id="day-wednesday">Wednesday</td>
+            <td id="wednesday-815"></td>
+            <td id="wednesday-915"></td>
+            <td id="wednesday-1015"></td>
+            <td id="wednesday-1115"></td>
+            <td id="wednesday-1315"></td>
+            <td id="wednesday-1415"></td>
+            <td id="wednesday-1515"></td>
+            <td id="wednesday-1615"></td>
+            <td id="wednesday-1715"></td>
+            <td id="wednesday-1815"></td>
+        </tr>
+        <tr>
+            <td class="day-column" id="day-thursday">Thursday</td>
+            <td id="thursday-815"></td>
+            <td id="thursday-915"></td>
+            <td id="thursday-1015"></td>
+            <td id="thursday-1115"></td>
+            <td id="thursday-1315"></td>
+            <td id="thursday-1415"></td>
+            <td id="thursday-1515"></td>
+            <td id="thursday-1615"></td>
+            <td id="thursday-1715"></td>
+            <td id="thursday-1815"></td>
+        </tr>
+        <tr>
+            <td class="day-column" id="day-friday">Friday</td>
+            <td id="friday-815"></td>
+            <td id="friday-915"></td>
+            <td id="friday-1015"></td>
+            <td id="friday-1115"></td>
+            <td id="friday-1315"></td>
+            <td id="friday-1415"></td>
+            <td id="friday-1515"></td>
+            <td id="friday-1615"></td>
+            <td id="friday-1715"></td>
+            <td id="friday-1815"></td>
+        </tr>
+        <tr style="background-color: #ecf4fc;" class="footer-schedule-column">
+            <td colspan="4">
+                <svg width="10" height="10">
+                    <rect width="10" height="10" style="fill:#97E3C2;" />
+                </svg>
+                <a> : เวลาในตอนนี้ (เมื่อมีคาบเรียน)</a>
+            </td>
+            <td colspan="4">
+                <svg width="10" height="10">
+                    <rect width="10" height="10" style="fill:#F69C9E;" />
+                </svg>
+                <a> : เวลาในตอนนี้ (เมื่อไม่มีคาบเรียน)</a>
+            </td>
+            <td colspan="4">
+                <svg width="10" height="10">
+                    <rect width="10" height="10" style="fill:#A7C7E7;" />
+                </svg>
+                <a> : คาบที่ใช้ห้องเรียน</a>
+            </td>
+        </tr>
+    </table><br><br>
 
-  <table class="table-Device">
-    <thead>
-      <tr>
-        <th colspan="4" style="font-size: medium; color: white;"><u>Status From Device</u></th>
-      </tr>
-      <tr style="color: white; font-size: 14px;">
-        <th>Air Conditioner</th>
-        <th>Electric Wall Fan</th>
-        <th>Ventilation Fan</th>
-        <th>Human</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span id="AirConditioner">Loading...</span></td>
-        <td><span id="pin2Status">Loading...</span></td>
-        <td><span id="pin3Status">Loading...</span></td>
-        <td><span id="Human">Loading...</span></td>
-      </tr>
-    </tbody>
-  </table>
+    <table class="table-Device">
+        <thead>
+            <tr>
+                <th colspan="4" style="font-size: large; color: white;"><u>Status From Device</u></th>
+            </tr>
+            <tr style="color: white; font-size: 14px;">
+                <th>Air Conditioner</th>
+                <th>Electric Wall Fan</th>
+                <th>Ventilation Fan</th>
+                <th>Human</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span id="AirConditioner">Loading...</span></td>
+                <td><span id="pin2Status">Loading...</span></td>
+                <td><span id="pin3Status">Loading...</span></td>
+                <td><span id="Human">Loading...</span></td>
+            </tr>
+        </tbody>
+    </table>
 
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
-
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCFcMdUr5eVTGJnEZfWD1YjRYXrV0Tyg_Y",
-      authDomain: "esp32-aircontroller.firebaseapp.com",
-      databaseURL: "https://esp32-aircontroller-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "esp32-aircontroller",
-      storageBucket: "esp32-aircontroller.appspot.com",
-      messagingSenderId: "257570449313",
-      appId: "1:257570449313:web:62ba93010e1188df048de0"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    // Initialize Realtime Database and get a reference to the service
-
-    const dbRef = ref(getDatabase(app));
-
-    // Function to fetch and update pin statuses from Firebase
-    function updateStatusFromFirebase() {
-      const deviceStatusRef = get(child(dbRef, "/DeviceStatus")).then((snapshot) => {
-        if (snapshot.exists()) {
-          const DeviceStatus = snapshot.val();
-
-          const statusElement = document.getElementById(`AirConditioner`);
-          if (statusElement) {
-            statusElement.innerHTML = DeviceStatus.AirConditioner ? '<b style="color: #4F7934;">ON</b>' : '<b style="color: #DD4400;">OFF</b>';
-          }
-        } else {
-          console.log("No data available");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-
-      const humanRef = get(child(dbRef, "/Human")).then((snapshot) => {
-        if (snapshot.exists()) {
-          const DetectionStatus = snapshot.val();
-          const statusElement = document.getElementById(`Human`);
-          if (statusElement) {
-            statusElement.innerHTML = DetectionStatus.Detection ? '<b style="color: #4F7934;">Present</b>' : '<b style="color: #DD4400;">Absent</b>';
-          }
-        } else {
-          console.log("No data available");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-    }
-
-    // Initial update when the page loads
-    updateStatusFromFirebase();
-
-    // Set interval to update the status every 1 seconds
-    setInterval(updateStatusFromFirebase, 1000);
-  </script>
+    <script type="module" src="firebase.js">
+    </script>
 
 </body>
 

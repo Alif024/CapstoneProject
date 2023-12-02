@@ -1,0 +1,89 @@
+table {
+    background-color: white;
+    border-collapse: collapse;
+    width: 75%;
+    text-align: right;
+    font-family: arial, sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 10px 18px #78A2CC;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.selected {
+    background-color: #A7C7E7;
+    /* สีสำหรับเซลล์ที่ถูกเลือก */
+}
+
+.day-column {
+    pointer-events: none;
+    background-color: #78A2CC;
+    color: white;
+    /* ป้องกันการเลือกคอลัมน์ของชื่อวัน */
+}
+
+.footer-schedule-column {
+    pointer-events: none;
+}
+
+/* สไตล์เริ่มต้นสำหรับข้อความในตาราง (ขนาดเล็กสุดที่ 9px) */
+table,
+th,
+td,
+button {
+    font-size: 13.5px;
+}
+
+/* Media query สำหรับหน้าจอที่มีขนาดกว้างขึ้น (เช่น หน้าจอเดสก์ท็อป) */
+@media screen and (min-width: 768px) {
+
+    table,
+    th,
+    td,
+    button {
+        font-size: 16px;
+    }
+}
+
+.table-Device {
+    background-color: white;
+    border-collapse: collapse;
+    width: 75%;
+    text-align: right;
+    font-family: arial, sans-serif;
+    font-size: 13px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid;
+    box-shadow: 5px 10px 18px #78A2CC;
+}
+
+.table-Device td {
+    border: 1px solid black;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.table-Device th {
+    background-color: #78A2CC;
+    border: 1px solid black;
+    padding-left: 23.5px;
+    padding-right: 23.5px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: center;
+}
