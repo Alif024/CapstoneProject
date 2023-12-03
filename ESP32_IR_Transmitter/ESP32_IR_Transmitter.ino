@@ -31,6 +31,7 @@ FirebaseConfig config;
 
 unsigned long sendDataPrevMillis = 0;
 bool statusAirFirebase;
+bool statusSystem = false;
 bool statusAir = false;
 
 #include "PinDefinitionsAndMore.h"  // กำหนดมาโครสำหรับขาขาเข้าและขาขาออก ฯลฯ.
@@ -136,9 +137,16 @@ void loop() {
       } else {
         Serial.println(fbdo.errorReason().c_str());
       }
+
+      if (Firebase.RTDB.getBool(&fbdo, F("/System/Status"), &statusSystem)) {
+        Serial.print("Update status success: ");
+        Serial.println(statusSystem);
+      } else {
+        Serial.println(fbdo.errorReason().c_str());
+      }
     }
 
-    if (!statusAir && statusAirFirebase != statusAir) {
+    if (!statusAir && statusAirFirebase != statusAir && statusSystem) {
       // เมื่อแอร์ปิดอยู่แล้วข้อมูลที่รับมาเป็น True ให้ทำการส่งสัญญาณเปิดแอร์
       statusAir = statusAirFirebase;
       repeatSendIR = millis();
@@ -157,7 +165,7 @@ void loop() {
 
         delay(DELAY_BETWEEN_REPEATS_MILLIS);  // รอสักครู่ระหว่างการส่งข้อมูลซ้ำ
       }
-    } else if (statusAir && statusAirFirebase != statusAir) {
+    } else if (statusAir && statusAirFirebase != statusAir && statusSystem) {
       // เมื่อแอร์เปิดอยู่แล้วข้อมูลที่รับมาเป็น False ให้ทำการส่งสัญญาณปิดแอร์
       statusAir = statusAirFirebase;
       repeatSendIR = millis();
