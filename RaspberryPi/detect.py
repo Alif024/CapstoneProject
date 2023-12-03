@@ -146,6 +146,8 @@ def task3():
         # 18.15 - 19.15 
         elif (hour == 18 and minute >= 15) or (hour == 19 and minute < 15):
             cellId = '-1815'
+        else:
+            cellId = ''
 
         if cellId == 'break':
             id = cellId
