@@ -9,8 +9,8 @@
 #include <addons/RTDBHelper.h>
 
 /* 1. กำหนดข้อมูลของการรับรองความถูกต้องและการเข้ารหัสที่ router ใช้ */
-#define WIFI_SSID "COC123"          // ชื่อ WIFI
-#define WIFI_PASSWORD "ooooo123"    // รหัส WIFI
+#define WIFI_SSID "XXXXXX"          // ชื่อ WIFI
+#define WIFI_PASSWORD "XXXXXXXX"    // รหัส WIFI
 
 // สำหรับข้อมูลประจำตัวต่อไปนี้ สามารถดูตัวอย่างได้ที่ examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 
@@ -21,8 +21,8 @@
 #define DATABASE_URL "https://esp32-aircontroller-default-rtdb.asia-southeast1.firebasedatabase.app/" 
 
 /* 4. กำหนดอีเมลและรหัสผ่านผู้ใช้ที่ลงทะเบียนหรือเพิ่มใน project แล้ว */
-#define USER_EMAIL "aleefrock12345@gmail.com"   // อีเมลที่เพิ่มใน Authentication บนแพลตฟอร์ม firebase
-#define USER_PASSWORD "!12345"                  // รหัสของอีเมลที่เพิ่มไว้ข้างต้น
+#define USER_EMAIL "XXXXXXXXXXXXXX@gmail.com"   // อีเมลที่เพิ่มใน Authentication บนแพลตฟอร์ม firebase
+#define USER_PASSWORD "XXXXXX"                  // รหัสของอีเมลที่เพิ่มไว้ข้างต้น
 
 // กำหนด object ข้อมูล Firebase
 FirebaseData fbdo;
