@@ -7,6 +7,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import socket
 from datetime import datetime
+import serial
 
 numberPeople = 0
 statusAir = False
@@ -83,6 +84,10 @@ def task2():
 
 def task3():
     global schedule
+    statusAir_before = False
+    ser = serial.Serial('/dev/ttyACM0',9600, timeout=1)
+    ser.flush()
+    ser.write(b"off\n")
     # Fetch the service account key JSON file contents
     cred = credentials.Certificate('credentials.json')
     while not(check_wifi_connection()):
@@ -159,6 +164,15 @@ def task3():
             schedule = True
         else:
             schedule = False
+
+        if statusAir_before != statusAir:
+            statusAir_before = statusAir
+            if statusAir_before:
+                ser.write(b"on\n")
+                sleep(1)
+            elif not(statusAir_before):
+                ser.write(b"off\n")
+                sleep(1)
         
 if __name__ == "__main__":
     t1 = Thread(target=task1)
