@@ -257,6 +257,20 @@ function updateStatusFromFirebase() {
     }).catch((error) => {
         console.error(error);
     });
+
+    get(child(ref(getDatabase(app)), "/DeviceStatus")).then((snapshot) => {
+        if (snapshot.exists()) {
+            const DeviceStatus = snapshot.val();
+            const statusElement = document.getElementById(`RaspberryPi`);
+            if (statusElement) {
+                statusElement.innerHTML = DeviceStatus.RaspberryPi ? '<b style="color: #4F7934;">ON</b>' : '<b style="color: #DD4400;">OFF</b>';
+            }
+        } else {
+            console.log("No data available");
+        }
+    }).catch((error) => {
+        console.error(error);
+    });
 }
 
 highlightCurrentTimeSlot();
