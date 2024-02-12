@@ -276,7 +276,7 @@ function updateStatusFromFirebase() {
 highlightCurrentTimeSlot();
 updateStatusFromFirebase();
 setInterval(highlightCurrentTimeSlot, 500);
-setInterval(updateStatusFromFirebase, 15000);
+setInterval(updateStatusFromFirebase, 1000);
 
 window.onresize = updateDayNames;
 
